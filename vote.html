@@ -9,7 +9,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore-compat.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{--ink:#0d0f14;--ink2:#1e2230;--mu:#7a8099;--bdr:#2e3347;--sf:#181c28;--s2:#1f2436;--s3:#262d42;--ac:#5b6cff;--a2:#8b9cff;--ag:rgba(91,108,255,.2);--go:#f6c347;--gn:#3ecf8e;--rd:#ff5c72;--wh:#f0f2ff;--tc:#9b59b6;--t2:#be90d4;--tg:rgba(155,89,182,.2);--r:12px;--rS:6px;--fH:'Syne',sans-serif;--fM:'DM Mono',monospace;--fB:'Lato',sans-serif}
+:root{--ink:#0d0f14;--ink2:#1e2230;--mu:#7a8099;--bdr:#2e3347;--sf:#181c28;--s2:#1f2436;--s3:#262d42;--ac:#5b6cff;--a2:#8b9cff;--ag:rgba(91,108,255,.2);--go:#f6c347;--gn:#3ecf8e;--rd:#ff5c72;--wh:#f0f2ff;--r:12px;--rS:6px;--fH:'Syne',sans-serif;--fM:'DM Mono',monospace;--fB:'Lato',sans-serif}
 html,body{font-size:16px;background:var(--ink);color:var(--wh);font-family:var(--fB);line-height:1.6;min-height:100vh}
 h1,h2,h3{font-family:var(--fH);font-weight:700;line-height:1.2}
 button{cursor:pointer;border:none;outline:none;font-family:var(--fH);font-weight:600;transition:all .18s}
@@ -32,14 +32,12 @@ input::placeholder{color:var(--mu)}
 .btn:disabled{opacity:.45;cursor:not-allowed}
 .bp{background:var(--ac);color:#fff}.bp:not(:disabled):hover{background:var(--a2);box-shadow:0 0 18px var(--ag);transform:translateY(-1px)}
 .bgn-btn{background:var(--gn);color:var(--ink)}.bgn-btn:not(:disabled):hover{filter:brightness(1.1)}
-.btc-btn{background:var(--tc);color:#fff}.btc-btn:not(:disabled):hover{background:var(--t2);box-shadow:0 0 18px var(--tg);transform:translateY(-1px)}
 .badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:100px;font-size:.73rem;font-weight:600;font-family:var(--fM)}
 .ba{background:var(--ag);color:var(--a2);border:1px solid var(--ac)}
 .bn{background:var(--s3);color:var(--mu);border:1px solid var(--bdr)}
 .bgn{background:rgba(62,207,142,.12);color:var(--gn);border:1px solid var(--gn)}
 .bgo{background:rgba(246,195,71,.12);color:var(--go);border:1px solid var(--go)}
 .brd{background:rgba(255,92,114,.12);color:var(--rd);border:1px solid var(--rd)}
-.btcb{background:rgba(155,89,182,.12);color:var(--t2);border:1px solid var(--tc)}
 .alert{padding:11px 15px;border-radius:var(--rS);font-size:.85rem;margin-bottom:14px;text-align:left}
 .ae{background:rgba(255,92,114,.1);border:1px solid rgba(255,92,114,.3);color:var(--rd)}
 .ai{background:var(--ag);border:1px solid rgba(91,108,255,.3);color:var(--a2)}
@@ -61,13 +59,11 @@ input::placeholder{color:var(--mu)}
 </head>
 <body>
 
-<!-- LOADING -->
 <div id="s-loading" class="center">
   <div class="spinner"></div>
   <p id="s-msg" class="mu" style="margin-top:18px;font-size:.85rem;font-family:var(--fM)">Starting up...</p>
 </div>
 
-<!-- ERROR -->
 <div id="s-error" class="center hidden">
   <div class="fu" style="max-width:440px">
     <div style="font-size:3rem;margin-bottom:12px">&#10060;</div>
@@ -77,7 +73,6 @@ input::placeholder{color:var(--mu)}
   </div>
 </div>
 
-<!-- VOTING CLOSED -->
 <div id="s-closed" class="center hidden">
   <div class="fu" style="max-width:420px">
     <div style="font-size:3.5rem;margin-bottom:14px">&#9646;</div>
@@ -86,7 +81,6 @@ input::placeholder{color:var(--mu)}
   </div>
 </div>
 
-<!-- STUDENT PIN SCREEN -->
 <div id="s-pin" class="hidden" style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(91,108,255,.15),var(--ink))">
   <div class="fu" style="width:100%;max-width:400px">
     <div style="text-align:center;margin-bottom:28px">
@@ -110,31 +104,29 @@ input::placeholder{color:var(--mu)}
   </div>
 </div>
 
-<!-- TEACHER CODE SCREEN -->
-<div id="s-teacher" class="hidden" style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(155,89,182,.12),var(--ink))">
+<div id="s-guest" class="hidden" style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(62,207,142,.1),var(--ink))">
   <div class="fu" style="width:100%;max-width:400px">
     <div style="text-align:center;margin-bottom:28px">
-      <div style="display:inline-flex;align-items:center;justify-content:center;width:62px;height:62px;border-radius:16px;background:var(--tc);font-size:1.8rem;margin-bottom:14px;color:#fff">&#127979;</div>
-      <h1 id="t-name-h" style="font-size:1.7rem;margin-bottom:4px"></h1>
-      <p class="mu" style="font-size:.88rem">Teacher / Judge Voting</p>
+      <div style="display:inline-flex;align-items:center;justify-content:center;width:62px;height:62px;border-radius:16px;background:var(--gn);font-size:1.8rem;margin-bottom:14px;color:var(--ink)">&#127760;</div>
+      <h1 id="g-name" style="font-size:1.7rem;margin-bottom:4px"></h1>
+      <p class="mu" style="font-size:.88rem">Guest / Anonymous Voting</p>
     </div>
-    <div class="card" style="border-color:rgba(155,89,182,.4)">
-      <h2 style="font-size:1.05rem;margin-bottom:6px">Enter Teacher Code</h2>
-      <p class="mu" style="font-size:.83rem;margin-bottom:16px">The organiser shared a secret teacher code with you to access anonymous voting.</p>
-      <div id="t-err" class="alert ae hidden"></div>
+    <div class="card">
+      <h2 style="font-size:1.05rem;margin-bottom:6px">Enter Guest Code</h2>
+      <p class="mu" style="font-size:.83rem;margin-bottom:16px">The organiser shared a code with you to access voting.</p>
+      <div id="g-err" class="alert ae hidden"></div>
       <div class="fg">
-        <label class="fl">Teacher Code</label>
-        <input id="t-inp" maxlength="24" placeholder="e.g. TEACHER2025" autocomplete="off"
+        <label class="fl">Guest Code</label>
+        <input id="g-inp" maxlength="24" placeholder="e.g. CONF2025" autocomplete="off"
           style="font-family:var(--fM);letter-spacing:.12em;font-size:1.15rem;text-align:center;padding:12px"
           oninput="this.value=this.value.toUpperCase()"
-          onkeydown="if(event.key==='Enter')doTeacher()"/>
+          onkeydown="if(event.key==='Enter')doGuest()"/>
       </div>
-      <button class="btc-btn btn" id="t-btn" onclick="doTeacher()" style="width:100%;padding:12px">Enter &amp; Vote &#8594;</button>
+      <button class="btn bgn-btn" id="g-btn" onclick="doGuest()" style="width:100%;padding:12px">Enter &amp; Vote &#8594;</button>
     </div>
   </div>
 </div>
 
-<!-- VOTING SCREEN -->
 <div id="s-vote" class="hidden page">
   <div class="topbar">
     <div class="brand">&#127942; PosterVote</div>
@@ -164,12 +156,11 @@ input::placeholder{color:var(--mu)}
   </div>
 </div>
 
-<!-- THANKS SCREEN -->
 <div id="s-thanks" class="hidden center" style="background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(62,207,142,.12),var(--ink))">
   <div class="fu" style="max-width:460px;width:100%">
     <div style="font-size:4rem;margin-bottom:14px">&#127942;</div>
     <h1 style="font-size:2rem;margin-bottom:8px">Ratings Submitted!</h1>
-    <p class="mu" style="margin-bottom:22px;font-size:.9rem">Thank you, <strong id="thnk-name"></strong>! Your ratings have been saved. Results will be announced after the session closes.</p>
+    <p class="mu" style="margin-bottom:22px;font-size:.9rem">Thank you, <strong id="t-name"></strong>! Your ratings have been saved. Results will be announced after the session closes.</p>
     <div id="t-summary" style="background:var(--s2);border:1px solid var(--bdr);border-radius:var(--r);padding:18px;text-align:left;margin-bottom:18px;width:100%"></div>
     <span class="badge bgn" style="font-size:.88rem;padding:9px 20px">&#10003; Your votes have been counted</span>
   </div>
@@ -189,324 +180,381 @@ var firebaseConfig = {
   measurementId:     "G-LBLE1XRH6L"
 };
 // ==============================================
-// URL params (NEW):
-//   ?campus=CAMPUS_ID   (was ?class=CLASS_ID)
-//   &mode=student       student PIN login
-//   &mode=teacher       teacher code login (was guest)
-//   &group=GROUP_ID     optional: scroll to this group
-// ==============================================
 
 var DB = null;
-var CLS_ID = null;   // campus ID (kept as CLS_ID internally for minimal rename)
+var CLS_ID = null;
 var CLS_DATA = null;
 var GROUPS = [];
 var VOTER = null;
 var RATINGS = {};
 
-var ALL_SCREENS = ['s-loading','s-error','s-closed','s-pin','s-teacher','s-vote','s-thanks'];
+var ALL_SCREENS = ['s-loading','s-error','s-closed','s-pin','s-guest','s-vote','s-thanks'];
 
-function screen(id){
-  ALL_SCREENS.forEach(function(s){
+function screen(id) {
+  ALL_SCREENS.forEach(function(s) {
     var el = document.getElementById(s);
-    if(el) el.classList.toggle('hidden', s!==id);
+    if (el) el.classList.toggle('hidden', s !== id);
   });
 }
-function setStatus(msg){ var el=document.getElementById('s-msg'); if(el) el.textContent=msg; }
-function showErr(title,msg){
-  var t=document.getElementById('e-title'), m=document.getElementById('e-msg');
-  if(t) t.textContent=title; if(m) m.textContent=msg; screen('s-error');
-}
-function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
-document.addEventListener('DOMContentLoaded', function(){
+function setStatus(msg) {
+  var el = document.getElementById('s-msg');
+  if (el) el.textContent = msg;
+  console.log('[PosterVote]', msg);
+}
+
+function showErr(title, msg) {
+  console.error('[PosterVote ERROR]', title, msg);
+  var t = document.getElementById('e-title');
+  var m = document.getElementById('e-msg');
+  if (t) t.textContent = title;
+  if (m) m.textContent = msg;
+  screen('s-error');
+}
+
+function esc(s) {
+  return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// Use DOMContentLoaded - fires as soon as HTML is parsed
+document.addEventListener('DOMContentLoaded', function() {
   setStatus('Initialising Firebase...');
-  try{
-    if(!firebase.apps||!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+
+  try {
+    if (!firebase.apps || !firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
     DB = firebase.firestore();
     setStatus('Firebase OK. Reading URL...');
-  } catch(e){ showErr('Firebase Init Failed', e.message); return; }
+  } catch(e) {
+    showErr('Firebase Init Failed', e.message);
+    return;
+  }
 
   var params = new URLSearchParams(window.location.search);
-  // Support both ?campus= (new) and ?class= (legacy)
-  CLS_ID = params.get('campus') || params.get('class');
+  CLS_ID = params.get('campus') || params.get('class'); // campus= new, class= legacy
   var mode = (params.get('mode') || 'student').toLowerCase();
   window._FOCUS_GROUP = params.get('group');
 
-  if(!CLS_ID){
-    showErr('Invalid Link','No ?campus= parameter in URL. Please use the exact link your instructor shared.');
+  if (!CLS_ID) {
+    showErr('Invalid Link', 'No ?campus= parameter in URL. Please use the exact link your instructor shared.');
     return;
   }
 
   setStatus('Loading campus data...');
-  DB.collection('campuses').doc(CLS_ID).get().then(function(snap){
-    if(!snap.exists){
-      // Fallback: try legacy 'classes' collection
-      return DB.collection('classes').doc(CLS_ID).get().then(function(snap2){
-        if(!snap2.exists){ showErr('Campus Not Found','No campus with ID "'+CLS_ID+'" was found. The link may be outdated.'); return null; }
-        CLS_DATA = snap2.data(); CLS_DATA.id = snap2.id;
-        CLS_DATA._collection = 'classes';
-        setStatus('Loaded (legacy class). Loading groups...');
-        return DB.collection('classes').doc(CLS_ID).collection('groups').get();
-      });
+
+  DB.collection('campuses').doc(CLS_ID).get().then(function(snap) {
+    if (!snap.exists) {
+      showErr('Campus Not Found', 'No campus with ID "' + CLS_ID + '" was found. The link may be outdated.');
+      return null;
     }
-    CLS_DATA = snap.data(); CLS_DATA.id = snap.id;
-    CLS_DATA._collection = 'campuses';
-    setStatus('Campus loaded. Loading groups...');
+    CLS_DATA = snap.data();
+    CLS_DATA.id = snap.id;
+    setStatus('Class loaded. Loading groups...');
     return DB.collection('campuses').doc(CLS_ID).collection('groups').get();
-  }).then(function(grpSnap){
-    if(!grpSnap) return;
-    GROUPS = grpSnap.docs.map(function(d){ return Object.assign({id:d.id},d.data()); });
-    setStatus('Loaded '+GROUPS.length+' groups. Checking voting status...');
 
-    if(!CLS_DATA.votingOpen){
-      var el=document.getElementById('c-name'); if(el) el.textContent=CLS_DATA.name;
-      screen('s-closed'); return;
+  }).then(function(grpSnap) {
+    if (!grpSnap) return; // error already shown above
+    GROUPS = grpSnap.docs.map(function(d) { return Object.assign({id: d.id}, d.data()); });
+    setStatus('Loaded ' + GROUPS.length + ' groups. Checking voting status...');
+
+    if (!CLS_DATA.votingOpen) {
+      var el = document.getElementById('c-name');
+      if (el) el.textContent = CLS_DATA.name;
+      screen('s-closed');
+      return;
     }
 
-    if(mode==='teacher'||mode==='guest'){
-      var tc = CLS_DATA.teacherCode || CLS_DATA.guestCode || '';
-      if(!tc){ showErr('Teacher Voting Disabled','No teacher code is set. The admin must set one in the Voting tab of the admin panel.'); return; }
-      var el2=document.getElementById('t-name-h'); if(el2) el2.textContent=CLS_DATA.name;
-      screen('s-teacher');
+    if (mode === 'teacher' || mode === 'guest') {
+      var teacherCode = CLS_DATA.teacherCode || CLS_DATA.guestCode || '';
+      if (!teacherCode) {
+        showErr('Teacher Voting Disabled', 'No teacher code is set. The admin must set one in the Voting tab.');
+        return;
+      }
+      var el2 = document.getElementById('g-name');
+      if (el2) el2.textContent = CLS_DATA.name;
+      screen('s-guest');
     } else {
-      var el3=document.getElementById('p-name'); if(el3) el3.textContent=CLS_DATA.name;
+      var el3 = document.getElementById('p-name');
+      if (el3) el3.textContent = CLS_DATA.name;
       screen('s-pin');
     }
-  }).catch(function(e){
-    showErr('Failed to Load Data', e.message+' | code: '+(e.code||'none'));
+
+  }).catch(function(e) {
+    showErr('Failed to Load Data', e.message + ' | code: ' + (e.code || 'none'));
   });
 });
 
-// ——— PIN AUTH (student) ———
-function doPin(){
-  var inp=document.getElementById('p-inp');
-  var pin=inp?inp.value.toUpperCase().replace(/[^A-Z0-9]/g,''):'';
-  if(pin.length<4) return;
-  var btn=document.getElementById('p-btn'), errEl=document.getElementById('p-err');
-  if(btn){btn.disabled=true;btn.textContent='Checking...';}
-  if(errEl) errEl.classList.add('hidden');
+function doPin() {
+  var inp = document.getElementById('p-inp');
+  var pin = inp ? inp.value.toUpperCase().replace(/\s/g,'') : '';
+  if (pin.length < 4) return;
 
-  var col = CLS_DATA._collection || 'campuses';
-  DB.collection(col).doc(CLS_ID).collection('students')
-    .where('pin','==',pin).limit(1).get()
-    .then(function(snap){
-      if(snap.empty){
-        if(errEl){errEl.textContent='PIN not found. Double-check your 6-character PIN.';errEl.classList.remove('hidden');}
-        if(btn){btn.disabled=false;btn.textContent='Verify & Continue';}
+  var btn = document.getElementById('p-btn');
+  var errEl = document.getElementById('p-err');
+  if (btn) { btn.disabled = true; btn.textContent = 'Checking...'; }
+  if (errEl) errEl.classList.add('hidden');
+
+  DB.collection('campuses').doc(CLS_ID).collection('students')
+    .where('pin', '==', pin).limit(1).get()
+    .then(function(snap) {
+      if (snap.empty) {
+        if (errEl) { errEl.textContent = 'PIN not found. Check for typos. Pins are case-insensitive.'; errEl.classList.remove('hidden'); }
+        if (btn) { btn.disabled = false; btn.textContent = 'Verify & Continue'; }
         return;
       }
-      var doc=snap.docs[0], data=doc.data();
-      VOTER={type:'student',name:data.name,studentDocId:doc.id,groupId:data.groupId||null};
-      if(data.hasVoted){showThanks(true);return;}
+      var doc = snap.docs[0];
+      var data = doc.data();
+      VOTER = { type:'student', name:data.name, studentDocId:doc.id, groupId:data.groupId || null };
+      if (data.hasVoted) { showThanks(true); return; }
       buildForm();
     })
-    .catch(function(e){
-      // Common causes: Firestore security rules blocking read, or network error
-      var msg=e.message||'Unknown error';
-      if(e.code==='permission-denied'||msg.toLowerCase().indexOf('permission')>-1){
-        msg='Access denied. Ask your admin to update Firestore security rules to allow reading the campuses collection.';
-      }
-      if(errEl){errEl.textContent=msg;errEl.classList.remove('hidden');}
-      if(btn){btn.disabled=false;btn.textContent='Verify & Continue';}
+    .catch(function(e) {
+      if (errEl) { errEl.textContent = 'Error: ' + e.message; errEl.classList.remove('hidden'); }
+      if (btn) { btn.disabled = false; btn.textContent = 'Verify & Continue'; }
     });
 }
 
-// ——— TEACHER CODE AUTH ———
-function doTeacher(){
-  var inp=document.getElementById('t-inp');
-  var code=inp?inp.value.toUpperCase().trim():'';
-  var errEl=document.getElementById('t-err');
-  if(errEl) errEl.classList.add('hidden');
-  if(!code) return;
+function doGuest() {
+  var inp = document.getElementById('g-inp');
+  var code = inp ? inp.value.toUpperCase().trim() : '';
+  var errEl = document.getElementById('g-err');
+  if (errEl) errEl.classList.add('hidden');
+  if (!code) return;
 
-  var expected=(CLS_DATA.teacherCode||CLS_DATA.guestCode||'').toUpperCase().trim();
-  if(code!==expected){
-    if(errEl){errEl.textContent='Incorrect code. Ask the organiser for the correct teacher code.';errEl.classList.remove('hidden');}
+  var expected = (CLS_DATA.teacherCode || CLS_DATA.guestCode || '').toUpperCase().trim();
+  if (code !== expected) {
+    if (errEl) { errEl.textContent = 'Incorrect code. Ask the organiser for the correct guest code.'; errEl.classList.remove('hidden'); }
     return;
   }
-  VOTER={type:'teacher',name:'Teacher',studentDocId:null,groupId:null};
+  VOTER = { type:'teacher', name:'Teacher', studentDocId:null, groupId:null };
   buildForm();
 }
 
-// ——— BUILD FORM ———
-function buildForm(){
-  var isStu=VOTER.type==='student';
-  var who=document.getElementById('v-who');
-  if(who) who.textContent=isStu?VOTER.name+' (Student)':'Teacher / Judge';
+function buildForm() {
+  var isStu = VOTER.type === 'student';
+  var who = document.getElementById('v-who');
+  if (who) who.textContent = isStu ? VOTER.name + ' (Student)' : 'Guest Voter';
 
-  var sub=document.getElementById('v-sub');
-  if(sub) sub.textContent=isStu
-    ? 'Rate any project except your own group. Give 1–5 stars on Design, Novelty and Content, then submit.'
-    : 'Rate any project. Give 1–5 stars on Design, Novelty and Content, then submit.';
+  var sub = document.getElementById('v-sub');
+  if (sub) sub.textContent = isStu
+    ? 'Rate any project except your own group. Give 1-5 stars on Design, Novelty and Content, then submit.'
+    : 'Rate any project. Give 1-5 stars on Design, Novelty and Content, then submit.';
 
-  if(isStu&&VOTER.groupId){
-    var own=GROUPS.find(function(g){return g.id===VOTER.groupId;});
-    var warn=document.getElementById('v-warn');
-    if(warn){warn.textContent='You are in '+(own?own.name:'a group')+' — you cannot rate your own project.';warn.classList.remove('hidden');}
+  if (isStu && VOTER.groupId) {
+    var own = GROUPS.find(function(g) { return g.id === VOTER.groupId; });
+    var warn = document.getElementById('v-warn');
+    if (warn) {
+      warn.textContent = 'You are in ' + (own ? own.name : 'a group') + ' — you cannot rate your own project.';
+      warn.classList.remove('hidden');
+    }
   }
 
   renderCards();
   screen('s-vote');
 
-  if(window._FOCUS_GROUP){
-    setTimeout(function(){
-      var el=document.getElementById('gc-'+window._FOCUS_GROUP);
-      if(el) el.scrollIntoView({behavior:'smooth',block:'center'});
-    },400);
+  if (window._FOCUS_GROUP) {
+    setTimeout(function() {
+      var el = document.getElementById('gc-' + window._FOCUS_GROUP);
+      if (el) el.scrollIntoView({ behavior:'smooth', block:'center' });
+    }, 400);
   }
 }
 
-function renderCards(){
-  var isStu=VOTER.type==='student';
-  var wrap=document.getElementById('v-groups'); if(!wrap) return;
-  var html='';
-  GROUPS.forEach(function(g){
-    var own=isStu&&g.id===VOTER.groupId;
-    html+='<div class="grp-card'+(own?' own':'')+'" id="gc-'+g.id+'">';
-    html+='<div class="between" style="margin-bottom:'+(own?'6':'12')+'px">';
-    html+='<div><h3 style="font-size:1rem;margin-bottom:2px">'+esc(g.name)+'</h3>';
-    html+='<p style="color:var(--a2);font-size:.84rem">&#128203; '+esc(g.projectName)+'</p></div>';
-    html+=own?'<span class="badge brd">&#128683; Your Project</span>':'<span class="badge bn" id="sb-'+g.id+'">Not rated</span>';
-    html+='</div>';
-    if(own){
-      html+='<p class="mu" style="font-size:.82rem">You cannot rate your own project.</p>';
+function renderCards() {
+  var isStu = VOTER.type === 'student';
+  var wrap = document.getElementById('v-groups');
+  if (!wrap) return;
+
+  var html = '';
+  GROUPS.forEach(function(g) {
+    var own = isStu && g.id === VOTER.groupId;
+    html += '<div class="grp-card' + (own ? ' own' : '') + '" id="gc-' + g.id + '">';
+    html += '<div class="between" style="margin-bottom:' + (own ? '6' : '12') + 'px">';
+    html += '<div><h3 style="font-size:1rem;margin-bottom:2px">' + esc(g.name) + '</h3>';
+    html += '<p style="color:var(--a2);font-size:.84rem">&#128203; ' + esc(g.projectName) + '</p></div>';
+    html += own
+      ? '<span class="badge brd">&#128683; Your Project</span>'
+      : '<span class="badge bn" id="sb-' + g.id + '">Not rated</span>';
+    html += '</div>';
+    if (own) {
+      html += '<p class="mu" style="font-size:.82rem">You cannot rate your own project.</p>';
     } else {
-      html+=critRow(g.id,'design','&#127912; Design','Visual quality, layout and aesthetics');
-      html+=critRow(g.id,'novelty','&#128161; Novelty','Originality and innovation of the idea');
-      html+=critRow(g.id,'content','&#128214; Content','Depth, accuracy and clarity of information');
+      html += critRow(g.id, 'design',  '&#127912; Design',  'Visual quality, layout and aesthetics');
+      html += critRow(g.id, 'novelty', '&#128161; Novelty', 'Originality and innovation of the idea');
+      html += critRow(g.id, 'content', '&#128214; Content',  'Depth, accuracy and clarity of information');
     }
-    html+='</div>';
+    html += '</div>';
   });
-  wrap.innerHTML=html;
-  setTimeout(function(){
-    GROUPS.forEach(function(g){
-      if(!(VOTER.type==='student'&&g.id===VOTER.groupId)){
-        makeStars(g.id,'design'); makeStars(g.id,'novelty'); makeStars(g.id,'content');
+  wrap.innerHTML = html;
+
+  setTimeout(function() {
+    GROUPS.forEach(function(g) {
+      var isStu2 = VOTER.type === 'student';
+      if (!(isStu2 && g.id === VOTER.groupId)) {
+        makeStars(g.id, 'design');
+        makeStars(g.id, 'novelty');
+        makeStars(g.id, 'content');
       }
     });
     refreshSubmit();
-  },30);
+  }, 30);
 }
 
-function critRow(gid,key,label,desc){
-  return '<div class="crit-row">'+
-    '<div><p style="font-weight:600;font-size:.86rem;margin-bottom:1px">'+label+'</p>'+
-    '<p style="font-size:.75rem;color:var(--mu)">'+desc+'</p></div>'+
-    '<div class="stars" id="sr-'+gid+'-'+key+'"></div>'+
+function critRow(gid, key, label, desc) {
+  return '<div class="crit-row">' +
+    '<div><p style="font-weight:600;font-size:.86rem;margin-bottom:1px">' + label + '</p>' +
+    '<p style="font-size:.75rem;color:var(--mu)">' + desc + '</p></div>' +
+    '<div class="stars" id="sr-' + gid + '-' + key + '"></div>' +
     '</div>';
 }
-function makeStars(gid,key){
-  var wrap=document.getElementById('sr-'+gid+'-'+key); if(!wrap) return;
-  var h='';
-  for(var n=1;n<=5;n++){
-    h+='<div class="star" id="st-'+gid+'-'+key+'-'+n+'" ';
-    h+='onclick="setScore(''+gid+'',''+key+'','+n+')" ';
-    h+='title="'+n+' star'+(n>1?'s':'')+'">&#9733;</div>';
+
+function makeStars(gid, key) {
+  var wrap = document.getElementById('sr-' + gid + '-' + key);
+  if (!wrap) return;
+  var h = '';
+  for (var n = 1; n <= 5; n++) {
+    h += '<div class="star" id="st-' + gid + '-' + key + '-' + n + '" ';
+    h += 'onclick="setScore(\'' + gid + '\',\'' + key + '\',' + n + ')" ';
+    h += 'title="' + n + ' star' + (n > 1 ? 's' : '') + '">&#9733;</div>';
   }
-  wrap.innerHTML=h;
+  wrap.innerHTML = h;
 }
-function setScore(gid,key,val){
-  if(!RATINGS[gid]) RATINGS[gid]={};
-  RATINGS[gid][key]=val;
-  for(var n=1;n<=5;n++){
-    var s=document.getElementById('st-'+gid+'-'+key+'-'+n);
-    if(s) s.classList.toggle('on',n<=val);
+
+function setScore(gid, key, val) {
+  if (!RATINGS[gid]) RATINGS[gid] = {};
+  RATINGS[gid][key] = val;
+  for (var n = 1; n <= 5; n++) {
+    var s = document.getElementById('st-' + gid + '-' + key + '-' + n);
+    if (s) s.classList.toggle('on', n <= val);
   }
-  refreshCard(gid); refreshSubmit();
+  refreshCard(gid);
+  refreshSubmit();
 }
-function refreshCard(gid){
-  var r=RATINGS[gid]||{};
-  var cnt=[r.design,r.novelty,r.content].filter(Boolean).length;
-  var badge=document.getElementById('sb-'+gid), card=document.getElementById('gc-'+gid);
-  if(!badge) return;
-  if(cnt===3){
-    var avg=((r.design+r.novelty+r.content)/3).toFixed(1);
-    badge.textContent='⭐ '+avg+'/5'; badge.className='badge bgo';
-    if(card) card.style.borderColor='var(--go)';
-  } else if(cnt>0){
-    badge.textContent=cnt+'/3 criteria'; badge.className='badge ba';
-    if(card) card.style.borderColor='var(--ac)';
+
+function refreshCard(gid) {
+  var r = RATINGS[gid] || {};
+  var cnt = [r.design, r.novelty, r.content].filter(Boolean).length;
+  var badge = document.getElementById('sb-' + gid);
+  var card  = document.getElementById('gc-' + gid);
+  if (!badge) return;
+  if (cnt === 3) {
+    var avg = ((r.design + r.novelty + r.content) / 3).toFixed(1);
+    badge.textContent = '&#11088; ' + avg + '/5';
+    badge.className = 'badge bgo';
+    if (card) card.style.borderColor = 'var(--go)';
+  } else if (cnt > 0) {
+    badge.textContent = cnt + '/3 criteria';
+    badge.className = 'badge ba';
+    if (card) card.style.borderColor = 'var(--ac)';
   } else {
-    badge.textContent='Not rated'; badge.className='badge bn';
-    if(card) card.style.borderColor='var(--bdr)';
+    badge.textContent = 'Not rated';
+    badge.className = 'badge bn';
+    if (card) card.style.borderColor = 'var(--bdr)';
   }
 }
-function refreshSubmit(){
-  var isStu=VOTER&&VOTER.type==='student';
-  var ratable=GROUPS.filter(function(g){return !(isStu&&g.id===VOTER.groupId);});
-  var full=ratable.filter(function(g){var r=RATINGS[g.id];return r&&r.design&&r.novelty&&r.content;});
-  var any=ratable.some(function(g){var r=RATINGS[g.id];return r&&(r.design||r.novelty||r.content);});
-  var btn=document.getElementById('v-submit'); if(btn) btn.disabled=!any;
-  var st=document.getElementById('v-status');
-  if(st) st.textContent=any?(full.length===ratable.length?'All projects rated - ready to submit!':'Partial ratings OK - submit when ready'):'Rate at least one project to submit';
-  var ct=document.getElementById('v-count');
-  if(ct) ct.textContent=full.length+' of '+ratable.length+' projects fully rated';
+
+function refreshSubmit() {
+  var isStu = VOTER && VOTER.type === 'student';
+  var ratable = GROUPS.filter(function(g) { return !(isStu && g.id === VOTER.groupId); });
+  var full = ratable.filter(function(g) { var r=RATINGS[g.id]; return r&&r.design&&r.novelty&&r.content; });
+  var any  = ratable.some(function(g)  { var r=RATINGS[g.id]; return r&&(r.design||r.novelty||r.content); });
+
+  var btn = document.getElementById('v-submit');
+  if (btn) btn.disabled = !any;
+
+  var st = document.getElementById('v-status');
+  if (st) st.textContent = any
+    ? (full.length === ratable.length ? 'All projects rated - ready to submit!' : 'Partial ratings OK - submit when ready')
+    : 'Rate at least one project to submit';
+
+  var ct = document.getElementById('v-count');
+  if (ct) ct.textContent = full.length + ' of ' + ratable.length + ' projects fully rated';
 }
 
-function doSubmit(){
-  var isStu=VOTER.type==='student';
-  var payload={};
-  GROUPS.forEach(function(g){
-    if(isStu&&g.id===VOTER.groupId) return;
-    var r=RATINGS[g.id];
-    if(r&&(r.design||r.novelty||r.content)) payload[g.id]={design:r.design||0,novelty:r.novelty||0,content:r.content||0};
+function doSubmit() {
+  var isStu = VOTER.type === 'student';
+  var payload = {};
+  GROUPS.forEach(function(g) {
+    if (isStu && g.id === VOTER.groupId) return;
+    var r = RATINGS[g.id];
+    if (r && (r.design || r.novelty || r.content)) {
+      payload[g.id] = { design:r.design||0, novelty:r.novelty||0, content:r.content||0 };
+    }
   });
-  if(!Object.keys(payload).length) return;
-  var btn=document.getElementById('v-submit'), errEl=document.getElementById('v-err');
-  if(btn){btn.disabled=true;btn.textContent='Submitting...';}
-  if(errEl) errEl.classList.add('hidden');
+  if (!Object.keys(payload).length) return;
 
-  var col=CLS_DATA._collection||'campuses';
+  var btn = document.getElementById('v-submit');
+  var errEl = document.getElementById('v-err');
+  if (btn) { btn.disabled = true; btn.textContent = 'Submitting...'; }
+  if (errEl) errEl.classList.add('hidden');
 
-  function doWrite(){
-    var batch=DB.batch();
-    var voteRef=DB.collection(col).doc(CLS_ID).collection('votes').doc();
-    batch.set(voteRef,{
-      voterType:VOTER.type,  // 'student' or 'teacher'
-      voterName:VOTER.name,
-      studentDocId:VOTER.studentDocId||null,
-      ratings:payload,
-      submittedAt:firebase.firestore.FieldValue.serverTimestamp()
+  function doWrite() {
+    var batch = DB.batch();
+    var voteRef = DB.collection('campuses').doc(CLS_ID).collection('votes').doc();
+    batch.set(voteRef, {
+      voterType:    VOTER.type,
+      voterName:    VOTER.name,
+      studentDocId: VOTER.studentDocId || null,
+      ratings:      payload,
+      submittedAt:  firebase.firestore.FieldValue.serverTimestamp()
     });
-    if(isStu&&VOTER.studentDocId){
-      batch.update(DB.collection(col).doc(CLS_ID).collection('students').doc(VOTER.studentDocId),{hasVoted:true});
+    if (isStu && VOTER.studentDocId) {
+      batch.update(
+        DB.collection('campuses').doc(CLS_ID).collection('students').doc(VOTER.studentDocId),
+        { hasVoted: true }
+      );
     }
     return batch.commit();
   }
 
-  var checkPromise=(isStu&&VOTER.studentDocId)
-    ?DB.collection(col).doc(CLS_ID).collection('students').doc(VOTER.studentDocId).get()
-    :Promise.resolve(null);
+  var checkPromise = (isStu && VOTER.studentDocId)
+    ? DB.collection('campuses').doc(CLS_ID).collection('students').doc(VOTER.studentDocId).get()
+    : Promise.resolve(null);
 
-  checkPromise.then(function(snap){
-    if(snap&&snap.exists&&snap.data().hasVoted){showThanks(true,null);return Promise.resolve(null);}
-    return doWrite().then(function(){showThanks(false,payload);});
-  }).catch(function(e){
-    if(errEl){errEl.textContent='Submit failed: '+e.message;errEl.classList.remove('hidden');}
-    if(btn){btn.disabled=false;btn.textContent='Submit Ratings';}
+  checkPromise.then(function(snap) {
+    if (snap && snap.exists && snap.data().hasVoted) {
+      showThanks(true, null);
+      return Promise.resolve(null);
+    }
+    return doWrite().then(function() { showThanks(false, payload); });
+  }).catch(function(e) {
+    if (errEl) { errEl.textContent = 'Submit failed: ' + e.message; errEl.classList.remove('hidden'); }
+    if (btn) { btn.disabled = false; btn.textContent = 'Submit Ratings'; }
   });
 }
 
-function showThanks(alreadyDone,payload){
-  var tn=document.getElementById('thnk-name'); if(tn) tn.textContent=VOTER?VOTER.name:'Voter';
-  var wrap=document.getElementById('t-summary');
-  if(!wrap){screen('s-thanks');return;}
-  if(alreadyDone){
-    wrap.innerHTML='<p class="mu" style="font-size:.84rem;text-align:center;padding:8px 0">You already submitted ratings for this session.</p>';
-    screen('s-thanks'); return;
+function showThanks(alreadyDone, payload) {
+  var tn = document.getElementById('t-name');
+  if (tn) tn.textContent = VOTER ? VOTER.name : 'Voter';
+
+  var wrap = document.getElementById('t-summary');
+  if (!wrap) { screen('s-thanks'); return; }
+
+  if (alreadyDone) {
+    wrap.innerHTML = '<p class="mu" style="font-size:.84rem;text-align:center;padding:8px 0">You already submitted ratings for this session.</p>';
+    screen('s-thanks');
+    return;
   }
-  var gMap={};GROUPS.forEach(function(g){gMap[g.id]=g;});
-  var rows=Object.keys(payload||{}).map(function(gid){
-    var g=gMap[gid]; if(!g) return '';
-    var r=payload[gid];
-    var cnt=[r.design,r.novelty,r.content].filter(Boolean).length;
-    var avg=cnt?((r.design+r.novelty+r.content)/cnt).toFixed(1):'—';
-    return '<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--bdr)">'+
-      '<div><p style="font-size:.86rem;font-weight:600">'+esc(g.name)+'</p>'+
-      '<p style="font-size:.78rem;color:var(--a2)">'+esc(g.projectName)+'</p></div>'+
-      '<span class="badge bgo">⭐ '+avg+'/5</span></div>';
+
+  var gMap = {};
+  GROUPS.forEach(function(g) { gMap[g.id] = g; });
+
+  var rows = Object.keys(payload || {}).map(function(gid) {
+    var g = gMap[gid];
+    if (!g) return '';
+    var r = payload[gid];
+    var cnt = [r.design,r.novelty,r.content].filter(Boolean).length;
+    var avg = cnt ? ((r.design+r.novelty+r.content)/cnt).toFixed(1) : '—';
+    return '<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--bdr)">' +
+      '<div><p style="font-size:.86rem;font-weight:600">' + esc(g.name) + '</p>' +
+      '<p style="font-size:.78rem;color:var(--a2)">' + esc(g.projectName) + '</p></div>' +
+      '<span class="badge bgo">&#11088; ' + avg + '/5</span></div>';
   }).join('');
-  wrap.innerHTML='<p style="font-size:.76rem;font-family:var(--fM);color:var(--mu);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Your Submitted Ratings</p>'+rows;
+
+  wrap.innerHTML =
+    '<p style="font-size:.76rem;font-family:var(--fM);color:var(--mu);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Your Submitted Ratings</p>' + rows;
+
   screen('s-thanks');
 }
 </script>
