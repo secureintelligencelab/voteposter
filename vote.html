@@ -179,16 +179,15 @@ input::placeholder{color:var(--mu)}
 // ==============================================
 // FIREBASE CONFIG
 // ==============================================
-const firebaseConfig = {
-  apiKey: "AIzaSyCAjeQf19uJd2_2QMolg8Tu02n6FtHKxH0",
-  authDomain: "postervote-393ae.firebaseapp.com",
-  projectId: "postervote-393ae",
-  storageBucket: "postervote-393ae.firebasestorage.app",
+var firebaseConfig = {
+  apiKey:            "AIzaSyCAjeQf19uJd2_2QMolg8Tu02n6FtHKxH0",
+  authDomain:        "postervote-393ae.firebaseapp.com",
+  projectId:         "postervote-393ae",
+  storageBucket:     "postervote-393ae.firebasestorage.app",
   messagingSenderId: "346700138124",
-  appId: "1:346700138124:web:f714e8e813edbe1dd01da9",
-  measurementId: "G-LBLE1XRH6L"
+  appId:             "1:346700138124:web:f714e8e813edbe1dd01da9",
+  measurementId:     "G-LBLE1XRH6L"
 };
-
 // ==============================================
 // URL params (NEW):
 //   ?campus=CAMPUS_ID   (was ?class=CLASS_ID)
@@ -281,7 +280,7 @@ document.addEventListener('DOMContentLoaded', function(){
 // ——— PIN AUTH (student) ———
 function doPin(){
   var inp=document.getElementById('p-inp');
-  var pin=inp?inp.value.toUpperCase().replace(/\s/g,''):'';
+  var pin=inp?inp.value.toUpperCase().replace(/[^A-Z0-9]/g,''):'';
   if(pin.length<4) return;
   var btn=document.getElementById('p-btn'), errEl=document.getElementById('p-err');
   if(btn){btn.disabled=true;btn.textContent='Checking...';}
@@ -292,7 +291,7 @@ function doPin(){
     .where('pin','==',pin).limit(1).get()
     .then(function(snap){
       if(snap.empty){
-        if(errEl){errEl.textContent='PIN not found. Check for typos.';errEl.classList.remove('hidden');}
+        if(errEl){errEl.textContent='PIN not found. Double-check your 6-character PIN.';errEl.classList.remove('hidden');}
         if(btn){btn.disabled=false;btn.textContent='Verify & Continue';}
         return;
       }
@@ -302,7 +301,12 @@ function doPin(){
       buildForm();
     })
     .catch(function(e){
-      if(errEl){errEl.textContent='Error: '+e.message;errEl.classList.remove('hidden');}
+      // Common causes: Firestore security rules blocking read, or network error
+      var msg=e.message||'Unknown error';
+      if(e.code==='permission-denied'||msg.toLowerCase().indexOf('permission')>-1){
+        msg='Access denied. Ask your admin to update Firestore security rules to allow reading the campuses collection.';
+      }
+      if(errEl){errEl.textContent=msg;errEl.classList.remove('hidden');}
       if(btn){btn.disabled=false;btn.textContent='Verify & Continue';}
     });
 }
