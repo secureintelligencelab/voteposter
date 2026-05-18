@@ -440,7 +440,7 @@ function refreshCard(gid) {
   if (!badge) return;
   if (cnt === 3) {
     var avg = ((r.design + r.novelty + r.content) / 3).toFixed(1);
-    badge.textContent = '&#11088; ' + avg + '/5';
+    badge.innerHTML = '⭐ ' + avg + '/5';
     badge.className = 'badge bgo';
     if (card) card.style.borderColor = 'var(--go)';
   } else if (cnt > 0) {
@@ -549,7 +549,7 @@ function showThanks(alreadyDone, payload) {
     return '<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--bdr)">' +
       '<div><p style="font-size:.86rem;font-weight:600">' + esc(g.name) + '</p>' +
       '<p style="font-size:.78rem;color:var(--a2)">' + esc(g.projectName) + '</p></div>' +
-      '<span class="badge bgo">&#11088; ' + avg + '/5</span></div>';
+      '<span class="badge bgo">⭐ ' + avg + '/5</span></div>';
   }).join('');
 
   wrap.innerHTML =
