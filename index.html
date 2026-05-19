@@ -834,12 +834,19 @@ async function loadResults(){
     '<span class="mu" style="font-size:.81rem">👥 '+stuVoted+'/'+stus.length+' students submitted</span>'+
     '<span class="badge '+(c.votingOpen?'bgn':'bn')+'">'+(c.votingOpen?'🟢 Open':'⏸ Closed')+'</span>';
 
-  // ——— WEIGHTED SCORING ———
-  // Teacher / guest ratings are weighted more heavily than student ratings,
-  // because judges assess posters more consistently and fairly.
-  const TEACHER_WEIGHT = 0.70;   // 70% — teachers & guests
-  const STUDENT_WEIGHT = 0.30;   // 30% — students
+  // ——— WEIGHTED SCORING (confidence-weighted) ———
+  // Teacher / guest ratings count more than student ratings, because judges
+  // assess posters more consistently and fairly. On top of that, the NUMBER
+  // of votes matters: a side backed by many consistent votes is trusted more
+  // than a side resting on a single lucky vote.
+  const TEACHER_WEIGHT = 0.70;   // base share — teachers & guests
+  const STUDENT_WEIGHT = 0.30;   // base share — students
   // (these two should add up to 1)
+
+  // Confidence smoothing constant. A side's confidence = n / (n + K).
+  //   1 vote -> 0.25,  3 votes -> 0.50,  10 votes -> 0.77 (with K=3).
+  // Higher K = more votes needed before a side is fully trusted.
+  const CONFIDENCE_K = 3;
 
   const agg={};
   grps.forEach(g=>agg[g.id]={group:g,stuScores:[],teaScores:[],
@@ -869,12 +876,21 @@ async function loadResults(){
     const sN=avgOf(e.stuScores,'novelty'), tN=avgOf(e.teaScores,'novelty');
     const sC=avgOf(e.stuScores,'content'), tC=avgOf(e.teaScores,'content');
 
-    // decide how to blend: if one side has no votes, give the other side full weight
-    // so a group is not penalised just because (e.g.) no teacher rated it.
-    let wTea, wStu;
-    if(e.nTea && e.nStu){ wTea=TEACHER_WEIGHT; wStu=STUDENT_WEIGHT; }
-    else if(e.nTea){      wTea=1;             wStu=0; }
-    else {                wTea=0;             wStu=1; }
+    // confidence of each side grows with its number of votes (0 votes -> 0)
+    const confTea = e.nTea/(e.nTea+CONFIDENCE_K);
+    const confStu = e.nStu/(e.nStu+CONFIDENCE_K);
+
+    // effective weight = base share scaled by how trustworthy that side is.
+    // A side with no votes contributes nothing (its weight is 0) — and because
+    // the weights are re-normalised below, the remaining side carries the
+    // score honestly instead of the group being scored as if it got zeros.
+    let wTea = TEACHER_WEIGHT*confTea;
+    let wStu = STUDENT_WEIGHT*confStu;
+    const wSum = wTea+wStu;
+    if(wSum>0){ wTea/=wSum; wStu/=wSum; }   // re-normalise so wTea+wStu = 1
+
+    // store the effective split so it can be shown in the UI if needed
+    e.wTea=wTea; e.wStu=wStu;
 
     e.avgD = tD*wTea + sD*wStu;
     e.avgN = tN*wTea + sN*wStu;
@@ -895,7 +911,7 @@ async function loadResults(){
           <p class="fl" style="color:var(--go);margin-bottom:3px">🏆 Best Poster — ${esc(c.name)}</p>
           <h2 style="font-size:1.3rem;color:var(--go);margin-bottom:2px">${esc(w.group.name)}</h2>
           <p style="font-size:.85rem;color:var(--a2);margin-bottom:6px">📋 ${esc(w.group.projectName)}</p>
-          <p class="mu" style="font-size:.79rem">Highest weighted score campus-wide — teacher/guest ratings count 70%, student ratings 30%.</p>
+          <p class="mu" style="font-size:.79rem">Highest weighted score campus-wide — teacher/guest ratings count more than student ratings (70/30 base), and sides with more votes are trusted more.</p>
         </div>
         <div style="text-align:right;flex-shrink:0">
           <div style="font-size:2.2rem;font-weight:800;font-family:var(--fM);color:var(--go);line-height:1">${w.avgT.toFixed(2)}</div>
