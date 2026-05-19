@@ -834,18 +834,52 @@ async function loadResults(){
     '<span class="mu" style="font-size:.81rem">👥 '+stuVoted+'/'+stus.length+' students submitted</span>'+
     '<span class="badge '+(c.votingOpen?'bgn':'bn')+'">'+(c.votingOpen?'🟢 Open':'⏸ Closed')+'</span>';
 
+  // ——— WEIGHTED SCORING ———
+  // Teacher / guest ratings are weighted more heavily than student ratings,
+  // because judges assess posters more consistently and fairly.
+  const TEACHER_WEIGHT = 0.70;   // 70% — teachers & guests
+  const STUDENT_WEIGHT = 0.30;   // 30% — students
+  // (these two should add up to 1)
+
   const agg={};
-  grps.forEach(g=>agg[g.id]={group:g,allScores:[],avgD:0,avgN:0,avgC:0,avgT:0,n:0});
+  grps.forEach(g=>agg[g.id]={group:g,stuScores:[],teaScores:[],
+    avgD:0,avgN:0,avgC:0,avgT:0,n:0,nStu:0,nTea:0});
   votes.forEach(v=>{
-    if(v.ratings){ Object.entries(v.ratings).forEach(([gid,sc])=>{ if(agg[gid]) agg[gid].allScores.push(sc); }); }
-    else if(v.groupId&&agg[v.groupId]){ agg[v.groupId].allScores.push(v.scores||{}); }
+    // a teacher OR guest vote counts towards the teacher weight; anything else is a student
+    const isTeacher = (v.voterType==='teacher' || v.voterType==='guest');
+    if(v.ratings){
+      Object.entries(v.ratings).forEach(([gid,sc])=>{
+        if(agg[gid]) (isTeacher?agg[gid].teaScores:agg[gid].stuScores).push(sc);
+      });
+    } else if(v.groupId&&agg[v.groupId]){
+      (isTeacher?agg[v.groupId].teaScores:agg[v.groupId].stuScores).push(v.scores||{});
+    }
   });
+  // average a list of score objects for one criterion
+  const avgOf=(list,key)=> list.length
+    ? list.reduce((s,v)=>s+(v[key]||0),0)/list.length : 0;
   Object.values(agg).forEach(e=>{
-    const n=e.allScores.length; e.n=n; if(!n) return;
-    e.avgD=e.allScores.reduce((s,v)=>s+(v.design||0),0)/n;
-    e.avgN=e.allScores.reduce((s,v)=>s+(v.novelty||0),0)/n;
-    e.avgC=e.allScores.reduce((s,v)=>s+(v.content||0),0)/n;
-    e.avgT=(e.avgD+e.avgN+e.avgC)/3;
+    e.nStu=e.stuScores.length;
+    e.nTea=e.teaScores.length;
+    e.n=e.nStu+e.nTea;
+    if(!e.n) return;
+
+    // per-criterion averages for each voter group, kept separate
+    const sD=avgOf(e.stuScores,'design'),  tD=avgOf(e.teaScores,'design');
+    const sN=avgOf(e.stuScores,'novelty'), tN=avgOf(e.teaScores,'novelty');
+    const sC=avgOf(e.stuScores,'content'), tC=avgOf(e.teaScores,'content');
+
+    // decide how to blend: if one side has no votes, give the other side full weight
+    // so a group is not penalised just because (e.g.) no teacher rated it.
+    let wTea, wStu;
+    if(e.nTea && e.nStu){ wTea=TEACHER_WEIGHT; wStu=STUDENT_WEIGHT; }
+    else if(e.nTea){      wTea=1;             wStu=0; }
+    else {                wTea=0;             wStu=1; }
+
+    e.avgD = tD*wTea + sD*wStu;
+    e.avgN = tN*wTea + sN*wStu;
+    e.avgC = tC*wTea + sC*wStu;
+    e.avgT = (e.avgD+e.avgN+e.avgC)/3;
   });
   const sorted=Object.values(agg).sort((a,b)=>b.avgT-a.avgT);
   const MEDAL=['🥇','🥈','🥉'];
@@ -861,7 +895,7 @@ async function loadResults(){
           <p class="fl" style="color:var(--go);margin-bottom:3px">🏆 Best Poster — ${esc(c.name)}</p>
           <h2 style="font-size:1.3rem;color:var(--go);margin-bottom:2px">${esc(w.group.name)}</h2>
           <p style="font-size:.85rem;color:var(--a2);margin-bottom:6px">📋 ${esc(w.group.projectName)}</p>
-          <p class="mu" style="font-size:.79rem">Highest average score campus-wide across all student and teacher ratings.</p>
+          <p class="mu" style="font-size:.79rem">Highest weighted score campus-wide — teacher/guest ratings count 70%, student ratings 30%.</p>
         </div>
         <div style="text-align:right;flex-shrink:0">
           <div style="font-size:2.2rem;font-weight:800;font-family:var(--fM);color:var(--go);line-height:1">${w.avgT.toFixed(2)}</div>
